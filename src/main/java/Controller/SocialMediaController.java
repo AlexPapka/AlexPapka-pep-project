@@ -1,14 +1,16 @@
 package Controller;
 
-import org.eclipse.jetty.http.HttpTester.Message;
+//import org.eclipse.jetty.http.HttpTester.Message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import Model.Message;
 import Model.Account;
 import Service.AccountService;
 import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -51,21 +53,21 @@ public class SocialMediaController {
         context.json("sample text");
     }
 
-    private void registerHandler(Context ctx){
+    private void registerHandler(Context ctx) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
-        Account addedAccount = AccountService.addAccount(account);              // account service not made yet
+        Account addedAccount = accountService.addAccount(account);              
         if(addedAccount != null){
             ctx.json(mapper.writeValueAsString(addedAccount));
         }else{
             ctx.status(400);
         }
     }
-
-    private void loginHandler(Context ctx){
+    /* */
+    private void loginHandler(Context ctx) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
-        Account getAccount = AccountService.getAccount(account);            // account service not made yet
+        Account getAccount = accountService.getAccount(account);            
         if(getAccount != null){
             ctx.json(mapper.writeValueAsString(getAccount));
         }else{
@@ -73,10 +75,10 @@ public class SocialMediaController {
         }
     }
 
-    private void postMessageHandler(Context ctx){
+    private void postMessageHandler(Context ctx) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
-        Message messageText = MessageService.postMessage(message);      // message service not made yet
+        Message messageText = messageService.postMessage(message);      
         if(messageText != null){
             ctx.json(mapper.writeValueAsString(messageText));
         }else{
@@ -85,21 +87,22 @@ public class SocialMediaController {
     }
 
     private void getAllMessagesHandler(Context ctx){
-        ctx.json(messageService.getAllMessages());      // messageService doesnt exist yet
+        ctx.json(messageService.getAllMessages());      
     }
 
     private void getMessageById(Context ctx){
-        ctx.json(messageService.getMessageById(ctx.pathParam("message_id")));   // messageService doesnt exist yet
+        ctx.json(messageService.getMessageById(Integer.parseInt(ctx.pathParam("message_id"))));   
     }
 
     private void deleteMessageById(Context ctx){
         // dont know yet
     }
 
-    private void patchMessageById(Context ctx){
+    private void patchMessageById(Context ctx) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
-        Message messageChanged = MessageService.patchMessage(ctx.pathParam("message_id"));    // Message service Doesnt exist yet
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message messageChanged = messageService.patchMessage(message, message_id);    // Message service Doesnt exist yet
         if(messageChanged != null){
             ctx.json(mapper.writeValueAsString(messageChanged));
         }else{
@@ -108,7 +111,7 @@ public class SocialMediaController {
     }
 
     private void getAllAccountMessageHandler(Context ctx){
-        ctx.json(messageService.getMessageByAccount(ctx.pathParam("account_id")));  // MessageService doesnt exist yet
+        ctx.json(messageService.getMessageByAccount(Integer.parseInt(ctx.pathParam("account_id"))));  // MessageService doesnt exist yet
     }
 
 }
