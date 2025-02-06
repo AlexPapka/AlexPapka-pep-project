@@ -4,8 +4,8 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 
 
 public class AccountDAO {
@@ -15,7 +15,7 @@ public class AccountDAO {
 
     public Account register(Account account){
         // check for account valititiy
-        if(account.username == null){
+        if(account.username == null || account.username == ""){
             return null;
         }
         if(UserExists(account.username) != null){
@@ -42,20 +42,10 @@ public class AccountDAO {
         return null;
     }
 
-    public Account login(Account account){
-        Account userAccount = UserExists(account.username);
-        if(userAccount == null){
-            return null;
-        }
-        if(userAccount.password != account.password){
-            return null;
-        }
-        return userAccount;
-    }
+    
 
     // need to be able to look up all accounts for a specific one
-    // private to try to prevent others from stealing passwords or account info
-    private Account UserExists(String username){
+    public Account UserExists(String username){
         Connection connection = ConnectionUtil.getConnection();
 
         try{

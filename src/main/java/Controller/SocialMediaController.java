@@ -41,7 +41,7 @@ public class SocialMediaController {
         app.patch("messages/{message_id}", this::patchMessageById);
         app.get("accounts/{account_id}/messages", this::getAllAccountMessageHandler);
 
-        app.start(8080);
+        //app.start(8080);
         return app;
     }
 
@@ -49,9 +49,7 @@ public class SocialMediaController {
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
-    private void exampleHandler(Context context) {
-        context.json("sample text");
-    }
+    
 
     private void registerHandler(Context ctx) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
