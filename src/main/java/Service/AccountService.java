@@ -28,7 +28,7 @@ public class AccountService {
         if(userAccount == null){    // catches bad username 
             return null;
         }
-        if(account.password == accountDAO.UserExists(account.username).password){
+        if(account.password.equals(userAccount.password)){
             return userAccount;
         }
         return null;

@@ -88,19 +88,34 @@ public class SocialMediaController {
         ctx.json(messageService.getAllMessages());      
     }
 
-    private void getMessageById(Context ctx){
-        ctx.json(messageService.getMessageById(Integer.parseInt(ctx.pathParam("message_id"))));   
+    private void getMessageById(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message returnedMessage = messageService.getMessageById(message_id);
+        if(returnedMessage != null){
+        ctx.json(mapper.writeValueAsString(returnedMessage)); 
+        }else{
+            ctx.status(200);
+        }  
     }
 
-    private void deleteMessageById(Context ctx){
-        // dont know yet
+    private void deleteMessageById(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message returnedMessage = messageService.deleteMessageById(message_id);
+        if(returnedMessage != null){
+            ctx.json(mapper.writeValueAsString(returnedMessage));
+        }else{
+            // all good
+        }
+
     }
 
     private void patchMessageById(Context ctx) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
-        Message messageChanged = messageService.patchMessage(message, message_id);    // Message service Doesnt exist yet
+        Message messageChanged = messageService.patchMessage(message, message_id);    
         if(messageChanged != null){
             ctx.json(mapper.writeValueAsString(messageChanged));
         }else{
